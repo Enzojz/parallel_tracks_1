@@ -16,7 +16,7 @@ local setWidth = function(ctrl, width)
     local tSize = api.gui.util.Size.new()
     tSize.h = tRect.h
     tSize.w = width
-    ctrl:setGravity(-1, 0)
+    ctrl:setGravity(-1, -1)
     ctrl:setMinimumSize(tSize)
 end
 
@@ -37,11 +37,9 @@ local createWindow = function()
         ntracksSlider:setValue(state.nTracks, false)
         
         setWidth(ntracksSlider, 150)
-        
-        ntracksLayout:setId("ptracks.ntracks.layout")
-        ntracksSlider:setId("ptracks.ntracks.slider")
-        
-        ntracksLayout:addItem(ntracksSlider)
+        ntracksValue:setGravity(1, -1)
+        ntracksLayout:setGravity(-1, -1)
+        ntracksLayout:addItem(ntracksText)
         ntracksLayout:addItem(ntracksValue)
         
         local spacingText = api.gui.comp.TextView.new(_("SPACING"))
@@ -55,8 +53,9 @@ local createWindow = function()
         spacingSlider:setValue(state.spacing * 2, false)
         
         setWidth(spacingSlider, 150)
-        
-        spacingLayout:addItem(spacingSlider)
+        spacingValue:setGravity(1, -1)
+        spacingLayout:setGravity(-1, -1)
+        spacingLayout:addItem(spacingText)
         spacingLayout:addItem(spacingValue)
         
         local comp = api.gui.comp.Component.new("")
@@ -66,10 +65,10 @@ local createWindow = function()
         
         state.window = api.gui.comp.Window.new(_("TITLE"), comp)
         state.window:setId("ptracks.window")
-        layout:addItem(ntracksText)
         layout:addItem(ntracksLayout)
-        layout:addItem(spacingText)
+        layout:addItem(ntracksSlider)
         layout:addItem(spacingLayout)
+        layout:addItem(spacingSlider)
         
         ntracksSlider:onValueChanged(function(value)
             table.insert(state.fn, function()

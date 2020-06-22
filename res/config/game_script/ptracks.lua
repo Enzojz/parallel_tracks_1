@@ -279,7 +279,12 @@ local script = {
     guiHandleEvent = function(_, name, param)
         if name == "builder.apply" then
             local proposal = param.proposal.proposal
-            if proposal.addedSegments
+            local toRemove = param.proposal.toRemove
+            local toAdd = param.proposal.toAdd
+            if state.use 
+                and (not toAdd or #toAdd == 0) 
+                and (not toRemove or #toRemove == 0)
+                and proposal.addedSegments
                 and proposal.new2oldSegments
                 and proposal.removedSegments
                 and #proposal.addedSegments > 0

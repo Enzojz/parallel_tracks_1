@@ -3,7 +3,6 @@ local coor = require "ptracks/coor"
 local func = require "ptracks/func"
 local pipe = require "ptracks/pipe"
 
--- local dbg = require("LuaPanda")
 local state = {
     use = false,
     window = false,
@@ -17,6 +16,7 @@ local setWidth = function(ctrl, width)
     local tSize = api.gui.util.Size.new()
     tSize.h = tRect.h
     tSize.w = width
+    ctrl:setGravity(-1, 0)
     ctrl:setMinimumSize(tSize)
 end
 
@@ -92,6 +92,7 @@ local createWindow = function()
         local mainMenuHeight = api.gui.util.getById("mainMenuTopBar"):getContentRect().h + api.gui.util.getById("mainMenuBottomBar"):getContentRect().h
         local x = api.gui.util.getById("ptracks.button"):getContentRect().x
         local y = mainView - mainMenuHeight - state.window:calcMinimumSize().h
+
         game.gui.window_setPosition("ptracks.window", x, y)
     end
 end

@@ -1,99 +1,49 @@
-local descEN = [[This mod helps you build some road layout which is difficult or impossible to do with the vanilla game.
-It's possible to built two road layouts with this tool:
-1. sharp road bifurcation
-2. Parallel roads
+local descEN = [[This mod helps you build parallel tracks quickly.
 
-1. Sharp bifurcation
-By the vanilla road tools of the game, the bifurcation angle of road is limited, are the players are not able to build sharp bifurcations. However, with the "Sharp bifurcation" function of this mod, it's now possible.
-Switch to the bifurcation mode and drag the road, the mod will rectrify the road afterwards.
-The build comes with following restrictions:
-- There must be an existing road section without junction and whose length is equal or longer than the part to build, if not the mod will do nothing
-- Not working with crossing
+Usage:
+1. With mod loaded, there is an "Parallel Tracks" label at the bottom bar of the screen, after it the state "On" or "Off" is indicated.
+2. Toggle to state to "On" to enable the function
+3. Set the "Spacing" and "Number of tracks" to desired value
+4. Place the central tracks and parallel tracks will be built. In case of even number of tracks to build, there will be one track more on left than the right.
 
-2. Parallel roads
-This mode helps you build roads parallelly.
-Just switch parallel mode and drag the road, the mod will convert them into two parallel roads afterward.
-There's option order the mod to convert the road to equivalant one-way roads or just generate parallel road of same type. There is also an option to change the spacing between two roads generated, please note if the spacing is larger that the original road created, the original raod will be kept after built.
+Stay strong and united before COVID-19!
 
-This mod works only for vanilla roads from the game and can be safely removed at any time.
-This mod may cause crashes after build, but with unidentified reason, I will try to make it perfect in the following time.
-(I though at first this mod can be done in one day, but in fact it took me 3 weeks becasue of such crashes)
-
------------------------------------------
-
-Stay home! #COVID19
 ]]
 
-local descFR = [[Ce mod vous aide à construire des dispositions de route qui sont difficile ou impossible à faire avec le jeu original.
-Il est possible de construire deux dispositions de route :
-1. Bifurcation à petit angle
-2. Routes en parallèle
+local descFR = [[Ce mod vous aide à construire des voies ferrées en parallèles
 
-1. Bifurcation à petit angle
-Par les outils routiers originales du jeu, l'angle de bifurcation de la route est limité, et les joueurs ne sont pas en mesure de construire des bifurcations à petit angles. Avec la fonction "Bifurcation à petit angle" de ce mod, c'est désormais possible.
-Passez en mode bifurcation et faites glisser la route, le mod la rectifiera ensuite.
-Il existe les restrictions suivantes :
-- Il doit y avoir un tronçon de route existant sans jonction et dont la longueur est égale ou supérieure à la partie à construire, sinon le mod ne fera rien
-- Ne fonctionne pas avec le croisement
-
-2. Routes parallèles
-Ce mode vous aide à construire des routes en parallèle.
-Changez simplement de mode parallèle et faites glisser la route, le mod les convertira ensuite en deux routes parallèles.
-Il existe une option pour que le mod convertisse la route en routes à sens unique équivalentes ou génère simplement deux routes en parallèles du même type. Il y a aussi une option pour changer l'espacement entre deux routes générées, veuillez noter que si l'espacement est plus grand que la route d'origine créée, la route d'origine sera conservée après la construction.
-
-Ce mod ne fonctionne que pour les routes originales du jeu et peut être désactivé en toute sécurité à tout moment.
-Ce mod pourrait planter le jeux après la construction, avec des causes non-identifié, je vais éssyer de les corriger plus tard.
-
------------------------------------------
-
-Restons chez nous! #COVID19
+Mode d’emploi :
+1. Avec ce mod chargé, il aura une libéllé "VFP" en bas d'écran, puis "Activé" ou "Désactivé" pour indiquer son état
+2. Cliquez sur l'indicateur, quand il affiche "Activé" c'est activé.
+3. Cliquez sur "VFP" pour définir le nombre des voies et l'écart entre eux.
+4. Posez la voie centrale puis ce mod va constrituire les restes automatiquement. Si le nombre de voie est en pair, il y aura une voie plus à gauche que à droite.
+   
+Restons prudents! #COVID19
 ]]
 
-local descCN = [[本模组可以帮助玩家建造原游戏无法或者很难建造的道路布局
-目前有两种功能：
-1. 小角度匝道
-2. 平行路
+local descCN = [[本模组可以帮助玩家快速建造平行的轨道
 
-1. 小角度匝道
-原装的游戏工具会限制道路的交叉角度，如果角度过小，游戏就会造出弯曲的道路。本功能能够帮助玩家建造非常长并且是笔直的匝道。
-在匝道模式下拖动道路，在建造完后模组会将新建的匝道变得笔直。
-该功能有两个局限：
-- 在新建闸道侧面的道路长度必须比匝道更长，并且这段距离上没有和其他的道路交会，否则模组会放弃建造。
-- 如果新建的匝道中间有和其他道路的交会，那么模组也会放弃建造。
+使用：
+1.若模组开启，屏幕最下方的信息条中显示“平行轨道”的标签，后面有标签表示该功能是否开启。
+2.点击“开启”或者“关闭”切换状态。
+3.点击“平行轨道”设置轨道间距和轨道数量。
+4.在地图上放置位于中央的轨道，模组将自动建造两侧的轨道。如果轨道数量为偶数，那么左侧会比右侧多一条。]]
 
-2. 平行路
-该模式可以在新建道路后将其自动转换为两条平行的道路。该模式下有一个选项，可以设定是直接创建两条相同类型的道路还是转换为同样宽度的单行道。此外还有一个选项用于设置平行道路的间距。
-注意如果平行道路间距大于原道路，则原道路会自动保留。
+local descTC = [[本模組可以幫助玩家快速建造平行的軌道
 
-本模组只对游戏原装道路有效，并且可以随时移除。
-本模组可能在建造道路后引发游戏崩溃，但是目前不清楚原因，我会在后续更新中解决这些问题。]]
-
-local descTC = [[本模組可以幫助玩家建造原遊戲無法或者很難建造的道路佈局
-目前有兩種功能：
-1. 小角度匝道
-2. 平行路
-
-1. 小角度匝道
-原裝的遊戲工具會限制道路的交叉角度，如果角度過小，遊戲就會造出彎曲的道路。本功能能夠幫助玩家建造非常長並且是筆直的匝道。
-在匝道模式下拖動道路，在建造完後模組會將新建的匝道變得筆直。
-該功能有兩個局限：
-- 在新建閘道側面的道路長度必須比匝道更長，並且這段距離上沒有和其他的道路交會，否則模組會放棄建造。
-- 如果新建的匝道中間有和其他道路的交會，那麼模組也會放棄建造。
-
-2. 平行路
-該模式可以在新建道路後將其自動轉換為兩條平行的道路。該模式下有一個選項，可以設定是直接創建兩條相同類型的道路還是轉換為同樣寬度的單行道。此外還有一個選項用於設置平行道路的間距。
-注意如果平行道路間距大於原道路，則原道路會自動保留。
-
-本模組只對遊戲原裝道路有效，並且可以隨時移除。
-本模組可能在建造道路後引發遊戲崩潰，但是目前不清楚原因，我會在後續更新中解決這些問題。]]
+使用：
+1.若模組開啟，螢幕最下方的資訊條中顯示“平行軌道”的標籤，後面有標籤表示該功能是否開啟。
+2.點擊“開啟”或者“關閉”切換狀態。
+3.點擊“平行軌道”設置軌道間距和軌道數量。
+4.在地圖上放置位於中央的軌道，模組將自動建造兩側的軌道。如果軌道數量為偶數，那麼左側會比右側多一條。]]
 
 function data()
     return {
         en = {
-            MOD_NAME = "Paraelle Tracks",
+            MOD_NAME = "Auto Parallel Tracks",
             MOD_DESC = descEN,
-            P_TRACKS = "Paraelle Tracks",
-            TITLE = "Paraelle Tracks",
+            P_TRACKS = "Parallel Tracks",
+            TITLE = "Parallel Tracks",
             SPACING = "Spacing",
             METER = "m",
             N_TRACK = "Number of tracks",
@@ -103,7 +53,7 @@ function data()
         fr = {
             MOD_NAME = "Voies ferrées parallèles",
             MOD_DESC = descFR,
-            P_TRACKS = "Voies ferrées parallèles",
+            P_TRACKS = "VFP",
             TITLE = "Voies ferrées parallèles",
             SPACING = "Écart",
             METER = "m",
@@ -123,15 +73,15 @@ function data()
             OFF = "关闭"
         },
         zh_TW = {
-            MOD_NAME = "",
+            MOD_NAME = "平行軌道",
             MOD_DESC = descTC,
-            P_TRACKS = "道路工具",
-            ROAD_TOOLBOX = "道路工具",
+            P_TRACKS = "平行軌道",
+            TITLE = "平行軌道",
             SPACING = "間距",
-            METER = "米",
-            ARROW = "→",
-            ONE_WAY = "單行道",
-            KEEP = "保持"
+            METER = "公尺",
+            N_TRACK = "軌道數",
+            ON = "開啟",
+            OFF = "關閉"
         }
     }
 end

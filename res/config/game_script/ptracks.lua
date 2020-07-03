@@ -29,69 +29,73 @@ local createWindow = function()
         local menu = api.gui.util.getById("menu.construction.rail.settings")
         local menuLayout = menu:getLayout()
         
-
+        local useComp = api.gui.comp.Component.new("ParamsListComp::ButtonParam")
         local useLayout = api.gui.layout.BoxLayout.new("VERTICAL")
-        useLayout:setName("ParamsListComp::ButtonParam")
-
+        useComp:setLayout(useLayout)
+        useComp:setId("ptracks.use")
+        
         local use = api.gui.comp.TextView.new(_("USE_PARALLEL_TRACKS"))
-        local useNo = api.gui.comp.Button.new(api.gui.comp.TextView.new(_("NO")), true)
-        local useYes = api.gui.comp.Button.new(api.gui.comp.TextView.new(_("YES")), true)
-
-        useNo:setId("tb")
-        -- useNo:setName("ToggleButton")
-        -- useYes:setName("ToggleButton")
         
-        local useButtonLayout = api.gui.layout.BoxLayout.new("HORIZONTAL")
-        useButtonLayout:addItem(useNo)
-        useButtonLayout:addItem(useYes)
-        useButtonLayout:setName("ToggleButtonGroup")
-
+        local useButtonComp = api.gui.comp.ToggleButtonGroup.new(0, 0, false)
+        local useNo = api.gui.comp.ToggleButton.new(api.gui.comp.TextView.new(_("NO")))
+        local useYes = api.gui.comp.ToggleButton.new(api.gui.comp.TextView.new(_("YES")))
+        useButtonComp:setName("ToggleButtonGroup")
+        useButtonComp:add(useNo)
+        useButtonComp:add(useYes)
+        
         useLayout:addItem(use)
-        useLayout:addItem(useButtonLayout)
-
-        useLayout:setId("ptracks.use")
+        useLayout:addItem(useButtonComp)
         
+        local ntracksComp = api.gui.comp.Component.new("ParamsListComp::SliderParam")
         local ntracksLayout = api.gui.layout.BoxLayout.new("VERTICAL")
+        ntracksComp:setLayout(ntracksLayout)
+        ntracksComp:setId("ptracks.ntracks")
+        ntracksLayout:setName("ParamsListComp::SliderParam::Layout")
+        
         local ntracksText = api.gui.comp.TextView.new(_("N_TRACK"))
         local ntracksValue = api.gui.comp.TextView.new(tostring(state.nTracks))
         local ntracksSlider = api.gui.comp.Slider.new(true)
         local ntracksSliderLayout = api.gui.layout.BoxLayout.new("HORIZONTAL")
-        local ntracksComp = api.gui.comp.Component.new("ParamsListComp::SliderParam")
-        ntracksComp:setLayout(ntracksLayout)
-        ntracksComp:setId("ptracks.ntracks")
         
+        ntracksValue:setName("ParamsListComp::SliderParam::SliderLabel")
+
         ntracksSlider:setStep(1)
         ntracksSlider:setMinimum(2)
         ntracksSlider:setMaximum(20)
         ntracksSlider:setValue(state.nTracks, false)
+        ntracksSlider:setName("Slider")
         
-        setWidth(ntracksSlider, 150)
         ntracksSliderLayout:addItem(ntracksSlider)
         ntracksSliderLayout:addItem(ntracksValue)
         ntracksLayout:addItem(ntracksText)
         ntracksLayout:addItem(ntracksSliderLayout)
         
+        local spacingComp = api.gui.comp.Component.new("ParamsListComp::SliderParam")
         local spacingLayout = api.gui.layout.BoxLayout.new("VERTICAL")
+        spacingLayout:setName("ParamsListComp::SliderParam::Layout")
+        
+        spacingComp:setLayout(spacingLayout)
+        spacingComp:setId("ptracks.spacing")
+        
         local spacingText = api.gui.comp.TextView.new(_("SPACING"))
         local spacingValue = api.gui.comp.TextView.new(setSpacingText(state.spacing))
         local spacingSlider = api.gui.comp.Slider.new(true)
         local spacingSliderLayout = api.gui.layout.BoxLayout.new("HORIZONTAL")
-        local spacingComp = api.gui.comp.Component.new("ParamsListComp::SliderParam")
-        spacingComp:setLayout(spacingLayout)
-        ntracksComp:setId("ptracks.spacing")
         
+        spacingValue:setName("ParamsListComp::SliderParam::SliderLabel")
+
         spacingSlider:setStep(1)
         spacingSlider:setMinimum(0)
         spacingSlider:setMaximum(20)
         spacingSlider:setValue(state.spacing * 2, false)
+        spacingSlider:setName("Slider")
         
-        setWidth(spacingSlider, 150)
         spacingSliderLayout:addItem(spacingSlider)
         spacingSliderLayout:addItem(spacingValue)
         spacingLayout:addItem(spacingText)
         spacingLayout:addItem(spacingSliderLayout)
         
-        menuLayout:addItem(useLayout)
+        menuLayout:addItem(useComp)
         menuLayout:addItem(ntracksComp)
         menuLayout:addItem(spacingComp)
         
@@ -109,8 +113,9 @@ local createWindow = function()
                 game.interface.sendScriptEvent("__ptracks__", "spacing", {spacing = value * 0.5})
             end)
         end)
+
         
-        useNo:onClick(function()
+        useNo:onToggle(function()
             table.insert(state.fn, function()
                 game.interface.sendScriptEvent("__ptracks__", "use", {use = false})
                 ntracksComp:setVisible(false, false)
@@ -118,15 +123,16 @@ local createWindow = function()
             end)
         end)
         
-        useYes:onClick(function()
+        useYes:onToggle(function()
             table.insert(state.fn, function()
                 game.interface.sendScriptEvent("__ptracks__", "use", {use = true})
                 game.interface.sendScriptEvent("__edgeTool__", "off", {sender = "ptracks"})
                 ntracksComp:setVisible(true, false)
                 spacingComp:setVisible(true, false)
-            
             end)
         end)
+        
+        if state.use then useYes:setSelected(true, true) else useNo:setSelected(true, true) end
     end
 end
 
@@ -263,8 +269,6 @@ local script = {
             state.nTracks = data.nTracks
         end
     end,
-    guiInit = function()
-    end,
     guiUpdate = function()
         for _, fn in ipairs(state.fn) do fn() end
         state.fn = {}
@@ -272,31 +276,31 @@ local script = {
     guiHandleEvent = function(source, name, param)
         if source == "trackBuilder" then
             createWindow()
-        end
-        if name == "builder.apply" then
-            local proposal = param.proposal.proposal
-            local toRemove = param.proposal.toRemove
-            local toAdd = param.proposal.toAdd
-            if state.use
-                and (not toAdd or #toAdd == 0)
-                and (not toRemove or #toRemove == 0)
-                and proposal.addedSegments
-                and proposal.new2oldSegments
-                and proposal.removedSegments
-                and #proposal.addedSegments > 0
-                and #proposal.new2oldSegments == 0
-                and #proposal.removedSegments == 0
-            then
-                local newSegments = {}
-                for i = 1, #proposal.addedSegments do
-                    local seg = proposal.addedSegments[i]
-                    if seg.type == 1 then
-                        table.insert(newSegments, seg.entity)
+            if name == "builder.apply" then
+                local proposal = param.proposal.proposal
+                local toRemove = param.proposal.toRemove
+                local toAdd = param.proposal.toAdd
+                if state.use
+                    and (not toAdd or #toAdd == 0)
+                    and (not toRemove or #toRemove == 0)
+                    and proposal.addedSegments
+                    and proposal.new2oldSegments
+                    and proposal.removedSegments
+                    and #proposal.addedSegments > 0
+                    and #proposal.new2oldSegments == 0
+                    and #proposal.removedSegments == 0
+                then
+                    local newSegments = {}
+                    for i = 1, #proposal.addedSegments do
+                        local seg = proposal.addedSegments[i]
+                        if seg.type == 1 then
+                            table.insert(newSegments, seg.entity)
+                        end
                     end
-                end
-                
-                if #newSegments > 0 then
-                    game.interface.sendScriptEvent("__ptracks__", "build", {newSegments = newSegments})
+                    
+                    if #newSegments > 0 then
+                        game.interface.sendScriptEvent("__ptracks__", "build", {newSegments = newSegments})
+                    end
                 end
             end
         end

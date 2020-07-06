@@ -1,4 +1,4 @@
-local dump = require "luadump"
+-- local dump = require "luadump"
 local coor = require "ptracks/coor"
 local func = require "ptracks/func"
 local pipe = require "ptracks/pipe"
@@ -245,7 +245,9 @@ local script = {
     handleEvent = function(src, id, name, param)
         if (id == "__edgeTool__" and param.sender ~= "ptracks") then
             if (name == "off") then
-                state.use = false
+                if (param.sender ~= "autosig2") then
+                    state.use = false
+                end
             end
         elseif (id == "__ptracks__") then
             if (name == "use") then

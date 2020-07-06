@@ -1,24 +1,32 @@
 local descEN = [[This mod helps you build parallel tracks quickly.
 
 Usage:
-1. With mod loaded, there is an "Parallel Tracks" label at the bottom bar of the screen, after it the state "On" or "Off" is indicated.
+1. With mod loaded, there is a "Parallel Tracks" option on the track construction menu.
 2. Toggle to state to "On" to enable the function
 3. Set the "Spacing" and "Number of tracks" to desired value
 4. Place the central tracks and parallel tracks will be built. In case of even number of tracks to build, there will be one track more on left than the right.
 
 * This mod can be safely removed from gamesaves.
 
+Changelog:
+1.1
+-Intregration with track construction menu
+
 Stay strong and united before COVID-19!]]
 
 local descFR = [[Ce mod vous aide à construire des voies ferrées en parallèles
 
 Mode d’emploi :
-1. Avec ce mod chargé, il aura une libéllé "VFP" en bas d'écran, puis "Activé" ou "Désactivé" pour indiquer son état
-2. Cliquez sur l'indicateur, quand il affiche "Activé" c'est activé.
-3. Cliquez sur "VFP" pour définir le nombre des voies et l'écart entre eux.
+1. Avec ce mod chargé, il aura une option "Voies ferrées parallèles" dans le menu de contrsuction de voie
+2. Cliquez sur "activé" pour activer la fonction.
+3. Définir le nombre des voies et l'écart entre eux.
 4. Posez la voie centrale puis ce mod va constrituire les restes automatiquement. Si le nombre de voie est en pair, il y aura une voie plus à gauche que à droite.
 
 * Ce mod pourrait être désactivé sans souci.
+
+Changelog:
+1.1
+-Intrégration avec le menu de contrsuction
    
 Restons prudents! #COVID19]]
 
@@ -30,7 +38,12 @@ local descCN = [[本模组可以帮助玩家快速建造平行的轨道
 3.点击“平行轨道”设置轨道间距和轨道数量。
 4.在地图上放置位于中央的轨道，模组将自动建造两侧的轨道。如果轨道数量为偶数，那么左侧会比右侧多一条。
 
-* 该模组可以安全地从存档中移除]]
+* 该模组可以安全地从存档中移除
+
+更新日志:
+1.1
+-将选项集成到了建造菜单中
+]]
 
 local descTC = [[本模組可以幫助玩家快速建造平行的軌道
 
@@ -40,15 +53,18 @@ local descTC = [[本模組可以幫助玩家快速建造平行的軌道
 3.點擊“平行軌道”設置軌道間距和軌道數量。
 4.在地圖上放置位於中央的軌道，模組將自動建造兩側的軌道。如果軌道數量為偶數，那麼左側會比右側多一條。
 
-* 該模組可以安全地從存檔中移除]]
+* 該模組可以安全地從存檔中移除
+
+更新日誌:
+1.1
+-將選項集成到了建造功能表中]]
 
 function data()
     return {
         en = {
             MOD_NAME = "Auto Parallel Tracks",
             MOD_DESC = descEN,
-            P_TRACKS = "Parallel Tracks",
-            TITLE = "Parallel Tracks",
+            USE_PARALLEL_TRACKS = "Parallel Tracks",
             SPACING = "Spacing",
             METER = "m",
             N_TRACK = "Number of tracks",
@@ -58,8 +74,7 @@ function data()
         fr = {
             MOD_NAME = "Voies ferrées parallèles",
             MOD_DESC = descFR,
-            P_TRACKS = "VFP",
-            TITLE = "Voies ferrées parallèles",
+            USE_PARALLEL_TRACKS = "Voies ferrées parallèles",
             SPACING = "Écart",
             METER = "m",
             N_TRACK = "Nombre des voies",
@@ -69,8 +84,7 @@ function data()
         zh_CN = {
             MOD_NAME = "平行轨道",
             MOD_DESC = descCN,
-            P_TRACKS = "平行轨道",
-            TITLE = "平行轨道",
+            USE_PARALLEL_TRACKS = "平行轨道",
             SPACING = "间距",
             METER = "米",
             N_TRACK = "轨道数",
@@ -80,7 +94,7 @@ function data()
         zh_TW = {
             MOD_NAME = "平行軌道",
             MOD_DESC = descTC,
-            P_TRACKS = "平行軌道",
+            USE_PARALLEL_TRACKS = "平行軌道",
             TITLE = "平行軌道",
             SPACING = "間距",
             METER = "公尺",

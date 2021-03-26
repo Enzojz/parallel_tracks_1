@@ -11,6 +11,18 @@ local state = {
     fn = {}
 }
 
+local translations = {
+    USE_PARALLEL_TRACKS = _("USE_PARALLEL_TRACKS"),
+    TITLE = _("TITLE"),
+    SPACING = _("SPACING"),
+    METER = _("METER"),
+    N_TRACK = _("N_TRACK"),
+    ON = _("ON"),
+    OFF = _("OFF"),
+    NO = _("No"),
+    YES = _("Yes")
+}
+
 local setWidth = function(ctrl, width)
     local tRect = ctrl:getContentRect()
     local tSize = api.gui.util.Size.new()
@@ -21,7 +33,7 @@ local setWidth = function(ctrl, width)
 end
 
 local setSpacingText = function(spacing)
-    return string.format("%0.1f%s", spacing, _("METER"))
+    return string.format("%0.1f%s", spacing, translations.METER)
 end
 
 local createWindow = function()
@@ -34,11 +46,11 @@ local createWindow = function()
         useComp:setLayout(useLayout)
         useComp:setId("ptracks.use")
         
-        local use = api.gui.comp.TextView.new(_("USE_PARALLEL_TRACKS"))
+        local use = api.gui.comp.TextView.new(translations.USE_PARALLEL_TRACKS)
         
         local useButtonComp = api.gui.comp.ToggleButtonGroup.new(0, 0, false)
-        local useNo = api.gui.comp.ToggleButton.new(api.gui.comp.TextView.new(_("NO")))
-        local useYes = api.gui.comp.ToggleButton.new(api.gui.comp.TextView.new(_("YES")))
+        local useNo = api.gui.comp.ToggleButton.new(api.gui.comp.TextView.new(translations.NO))
+        local useYes = api.gui.comp.ToggleButton.new(api.gui.comp.TextView.new(translations.YES))
         useButtonComp:setName("ToggleButtonGroup")
         useButtonComp:add(useNo)
         useButtonComp:add(useYes)
@@ -52,13 +64,13 @@ local createWindow = function()
         ntracksComp:setId("ptracks.ntracks")
         ntracksLayout:setName("ParamsListComp::SliderParam::Layout")
         
-        local ntracksText = api.gui.comp.TextView.new(_("N_TRACK"))
+        local ntracksText = api.gui.comp.TextView.new(translations.N_TRACK)
         local ntracksValue = api.gui.comp.TextView.new(tostring(state.nTracks))
         local ntracksSlider = api.gui.comp.Slider.new(true)
         local ntracksSliderLayout = api.gui.layout.BoxLayout.new("HORIZONTAL")
         
         ntracksValue:setName("ParamsListComp::SliderParam::SliderLabel")
-
+        
         ntracksSlider:setStep(1)
         ntracksSlider:setMinimum(2)
         ntracksSlider:setMaximum(20)
@@ -77,13 +89,13 @@ local createWindow = function()
         spacingComp:setLayout(spacingLayout)
         spacingComp:setId("ptracks.spacing")
         
-        local spacingText = api.gui.comp.TextView.new(_("SPACING"))
+        local spacingText = api.gui.comp.TextView.new(translations.SPACING)
         local spacingValue = api.gui.comp.TextView.new(setSpacingText(state.spacing))
         local spacingSlider = api.gui.comp.Slider.new(true)
         local spacingSliderLayout = api.gui.layout.BoxLayout.new("HORIZONTAL")
         
         spacingValue:setName("ParamsListComp::SliderParam::SliderLabel")
-
+        
         spacingSlider:setStep(1)
         spacingSlider:setMinimum(0)
         spacingSlider:setMaximum(20)
@@ -113,7 +125,7 @@ local createWindow = function()
                 game.interface.sendScriptEvent("__ptracks__", "spacing", {spacing = value * 0.5})
             end)
         end)
-
+        
         
         useNo:onToggle(function()
             table.insert(state.fn, function()
@@ -218,7 +230,7 @@ local buildParallel = function(newSegments)
                 return pipe.new
                     * game.interface.getEntities({pos = pos:toTuple(), radius = 1}, {type = "BASE_NODE"})
                     * pipe.map(game.interface.getEntity)
-                    * pipe.sort(function(e) return (coor.new(e.position) - pos):length() end)
+                    * pipe.sort(function(l, r) return (coor.new(l.position) - pos):length2() < (coor.new(r.position) - pos):length2() end)
                     * (function(r) return #r > 0 and r[1].id or nil end)
             end
             

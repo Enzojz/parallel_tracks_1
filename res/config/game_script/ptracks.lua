@@ -1,4 +1,3 @@
--- local dump = require "luadump"
 local coor = require "ptracks/coor"
 local func = require "ptracks/func"
 local pipe = require "ptracks/pipe"
@@ -8,6 +7,7 @@ local state = {
     window = false,
     spacing = 0,
     nTracks = 2,
+    agent = false,
     fn = {}
 }
 
@@ -22,15 +22,6 @@ local translations = {
     NO = _("No"),
     YES = _("Yes")
 }
-
-local setWidth = function(ctrl, width)
-    local tRect = ctrl:getContentRect()
-    local tSize = api.gui.util.Size.new()
-    tSize.h = tRect.h
-    tSize.w = width
-    ctrl:setGravity(-1, -1)
-    ctrl:setMinimumSize(tSize)
-end
 
 local setSpacingText = function(spacing)
     return string.format("%0.1f%s", spacing, translations.METER)
@@ -168,7 +159,7 @@ end
 local buildParallel = function(newSegments)
     local newIdCount = 0
     local newNodes = {}
-    local function newId()newIdCount = newIdCount + 1 return -newIdCount end
+    local function newId() newIdCount = newIdCount + 1 return -newIdCount end
     local proposal = api.type.SimpleProposal.new()
     
     local trackEdge = api.engine.getComponent(newSegments[1], api.type.ComponentType.BASE_EDGE_TRACK)
@@ -185,7 +176,7 @@ local buildParallel = function(newSegments)
         func.seq(-(nTracks - 1) / 2, (nTracks - 1) / 2) or
         func.seq(-nTracks / 2, nTracks / 2 - 1))
         * pipe.filter(function(pos) return pos ~= 0 end)
-    
+    local positions = {}
     for n, seg in ipairs(newSegments) do
         newNodes[n] = {}
         
@@ -201,6 +192,9 @@ local buildParallel = function(newSegments)
             local disp0 = vec0:cross(rot):normalized() * pos * spacing
             local disp1 = vec1:cross(rot):normalized() * pos * spacing
             local vec0, vec1, pos0, pos1 = calcVec(pos0 + disp0, pos1 + disp1, vec0, vec1)
+            if n == #newSegments then
+                table.insert(positions, pos1)
+            end
             local entity = api.type.SegmentAndEntity.new()
             entity.entity = newId()
             entity.playerOwned = {player = api.engine.util.getPlayer()}
@@ -249,8 +243,29 @@ local buildParallel = function(newSegments)
             proposal.streetProposal.edgesToAdd[#proposal.streetProposal.edgesToAdd + 1] = entity
         end
     end
-    local build = api.cmd.make.buildProposal(proposal, nil, false)
-    api.cmd.sendCommand(build, function(x) end)
+    local build = api.cmd.make.buildProposal(proposal, nil, true)
+    api.cmd.sendCommand(build, function(cmd, success)
+        if success and cmd.resultProposalData.costs and cmd.resultProposalData.costs > 0 then
+            local averageCost = cmd.resultProposalData.costs / #positions
+
+            for _, pos in ipairs(positions) do
+                local cat = api.type.JournalEntryCategory.new()
+                cat.type = 2 -- construction
+                cat.carrier = 1 -- rail
+                cat.construction = 1 -- track
+                cat.maintenance = 0
+                cat.other = 0
+    
+                local journal = api.type.JournalEntry.new()
+                journal.amount = -math.floor(averageCost)
+                journal.category = cat
+                journal.time = -1
+                local vec = api.type.Vec3f.new()
+                vec.x, vec.y, vec.z = pos.x, pos.y, pos.z
+                api.cmd.sendCommand(api.cmd.make.bookJournalEntry(api.engine.util.getPlayer(), journal, vec))
+            end
+        end
+        end)
 end
 
 local script = {
@@ -264,12 +279,15 @@ local script = {
         elseif (id == "__ptracks__") then
             if (name == "use") then
                 state.use = param.use
+            elseif (name == "agent") then
+                state.agent = param.agent
             elseif (name == "spacing") then
                 state.spacing = param.spacing
             elseif (name == "ntracks") then
                 state.nTracks = param.nTracks
             elseif (name == "build") then
                 buildParallel(param.newSegments)
+                state.agent = false
             end
         end
     end,
@@ -279,9 +297,14 @@ local script = {
     load = function(data)
         if data then
             state.use = data.use or false
+            state.agent = state.agent or false
             state.spacing = data.spacing
             state.nTracks = data.nTracks
         end
+    end,
+    guiInit = function()
+        game.interface.sendScriptEvent("__ptracks__", "agent", { agent = false })
+        game.interface.sendScriptEvent("__ptracks__", "initialized", {})
     end,
     guiUpdate = function()
         for _, fn in ipairs(state.fn) do fn() end
@@ -294,7 +317,7 @@ local script = {
                 local proposal = param.proposal.proposal
                 local toRemove = param.proposal.toRemove
                 local toAdd = param.proposal.toAdd
-                if state.use
+                if state.use and not state.agent
                     and (not toAdd or #toAdd == 0)
                     and (not toRemove or #toRemove == 0)
                     and proposal.addedSegments

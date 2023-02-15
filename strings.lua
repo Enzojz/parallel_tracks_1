@@ -9,6 +9,9 @@ Usage:
 * This mod can be safely removed from gamesaves.
 
 Changelog:
+1.2
+- Added cost calculation
+- Added event for external mod control
 1.1
 -Intregration with track construction menu
 
@@ -25,6 +28,8 @@ Mode d’emploi :
 * Ce mod pourrait être désactivé sans souci.
 
 Changelog:
+1.2
+- Calcul des côuts
 1.1
 -Intrégration avec le menu de contrsuction
    
@@ -41,6 +46,8 @@ local descCN = [[本模组可以帮助玩家快速建造平行的轨道
 * 该模组可以安全地从存档中移除
 
 更新日志:
+1.2
+-花费计算
 1.1
 -将选项集成到了建造菜单中
 ]]
@@ -56,6 +63,8 @@ local descTC = [[本模組可以幫助玩家快速建造平行的軌道
 * 該模組可以安全地從存檔中移除
 
 更新日誌:
+1.2
+花費計算
 1.1
 -將選項集成到了建造功能表中]]
 

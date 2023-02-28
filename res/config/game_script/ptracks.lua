@@ -45,6 +45,7 @@ local createWindow = function()
         useButtonComp:setName("ToggleButtonGroup")
         useButtonComp:add(useNo)
         useButtonComp:add(useYes)
+        useButtonComp:setOneButtonMustAlwaysBeSelected(true)
         
         useLayout:addItem(use)
         useLayout:addItem(useButtonComp)
@@ -287,7 +288,6 @@ local script = {
                 state.nTracks = param.nTracks
             elseif (name == "build") then
                 buildParallel(param.newSegments)
-                state.agent = false
             end
         end
     end,
@@ -297,7 +297,7 @@ local script = {
     load = function(data)
         if data then
             state.use = data.use or false
-            state.agent = state.agent or false
+            state.agent = data.agent or false
             state.spacing = data.spacing
             state.nTracks = data.nTracks
         end

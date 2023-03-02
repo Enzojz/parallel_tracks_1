@@ -45,7 +45,6 @@ local createWindow = function()
         useButtonComp:setName("ToggleButtonGroup")
         useButtonComp:add(useNo)
         useButtonComp:add(useYes)
-        useButtonComp:setOneButtonMustAlwaysBeSelected(true)
         
         useLayout:addItem(use)
         useLayout:addItem(useButtonComp)
@@ -247,7 +246,7 @@ local buildParallel = function(newSegments)
     local build = api.cmd.make.buildProposal(proposal, nil, true)
     api.cmd.sendCommand(build, function(cmd, success)
         if success and cmd.resultProposalData.costs and cmd.resultProposalData.costs > 0 then
-            local averageCost = cmd.resultProposalData.costs / #positions
+            local averageCost = -math.floor(cmd.resultProposalData.costs / #positions)
 
             for _, pos in ipairs(positions) do
                 local cat = api.type.JournalEntryCategory.new()
@@ -258,11 +257,10 @@ local buildParallel = function(newSegments)
                 cat.other = 0
     
                 local journal = api.type.JournalEntry.new()
-                journal.amount = -math.floor(averageCost)
+                journal.amount = averageCost
                 journal.category = cat
                 journal.time = -1
-                local vec = api.type.Vec3f.new()
-                vec.x, vec.y, vec.z = pos.x, pos.y, pos.z
+                local vec = api.type.Vec3f.new(pos.x, pos.y, pos.z)
                 api.cmd.sendCommand(api.cmd.make.bookJournalEntry(api.engine.util.getPlayer(), journal, vec))
             end
         end
@@ -297,7 +295,7 @@ local script = {
     load = function(data)
         if data then
             state.use = data.use or false
-            state.agent = data.agent or false
+            state.agent = false
             state.spacing = data.spacing
             state.nTracks = data.nTracks
         end
